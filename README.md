@@ -137,18 +137,27 @@ best test accuracy = 0.39
 
 ### Question2F : Plot the ROC curve of the best estimator found from problem 2-D
 ```python
-# In[2D]
-ytr = label_binarize(ytr, classes=[0, 1, 2])
-yte = label_binarize(yte, classes=[0, 1, 2])
-reg=RandomForestClassifier(n_jobs=-1,verbose=2)
-param_grid={'bootstrap':[True],
-            'max_depth':[80,90,100,110],
-            'max_features': [2, 3],
-            'min_samples_leaf': [3, 4, 5],
-            'min_samples_split': [8, 10, 12],
-            'n_estimators':[100,200,300,1000]
-            }
-gs=GridSearchCV(reg,param_grid=param_grid,cv=3,verbose=-1) #grid search
-gs.fit(xtr,ytr)
+# In[2F]
+
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+lw=2
+for i in range(3):
+    fpr[i], tpr[i], _ = roc_curve(yte[:, i], yte_pre[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
+colors = cycle(['blue', 'red', 'green'])
+for i, color in zip(range(3), colors):
+    plt.plot(fpr[i], tpr[i], color=color, lw=2,
+              label='ROC curve of class {0} (area = {1:0.2f})'
+              ''.format(i, roc_auc[i]))
+plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+plt.xlim([-0.05, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic for multi-class data')
+plt.legend(loc="lower right")
+plt.show()
 ```
 ![](https://i.imgur.com/NrXrqbx.png)
