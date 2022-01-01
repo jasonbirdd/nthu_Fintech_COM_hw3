@@ -1,0 +1,7 @@
+pandas
+matplotlib
+xlwings
+json
+numpy
+yfinance
+scikit-learn
